@@ -84,3 +84,5 @@ voting-service LoadBalancer 10.83.11.96 35.238.94.250 80:32404/TCP 15m
 To check if the result app is correctly running, go to http://{result-service.EXTERNAL-IP} ==> the voting result app must be displayed
 
 You can now add votes in the voting app and check the result in the result app.
+
+Deploying PODS does not help to scale the application easily. If a POD fails, it will not come up again.
