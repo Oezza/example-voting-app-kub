@@ -11,10 +11,11 @@ spec:
       name: redis-app-pod
       app: demo-voting-app
   template:
-    name: redis-app-pod
-    labels:
+    metadata:
       name: redis-app-pod
-      app: demo-voting-app
+      labels:
+        name: redis-app-pod
+        app: demo-voting-app
     spec:
       containers:
         - name: redis-app
