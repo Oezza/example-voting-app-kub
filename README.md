@@ -6,7 +6,15 @@ The used docker images are retrieved from the [docker voting app samples](https:
 
 The example is run in GCP kubernetes engine
 
-## commands
+## Create the voting app using pods and services
+
+### Steps
+
+1. Deploy PODS
+2. Create ClusterIP Services (for internal communication in the cluster)
+3. Create Loadbalancer Service (to expose the front application to external users)
+
+![Application architecture](/resources/VotingApp.png)
 
 ```
 kubectl create -f voting-app-pod.yml // to create a pod from a yml file
