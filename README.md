@@ -93,3 +93,14 @@ under deployment folder
 kubectl create -f .
 kubectl get all
 
+If you're not able to access to the application from the NodeExternalIP/AppExternalPort, please check the firewall conforguration.
+You can add a new firewall rule in GCP as follow :
+Go to GCP console NETWORKING / VPC network / firewall rules
+In the list of rules, copy the target of the rules related to the voting-app
+Click on the button create firewall rule
+Name : voting app
+Targets : specified target tags
+Targets tag : gke-example-voting-app-d3ec8c0c-node // past the target you've copied later
+Source filter : ip ranges
+Source IP ranges : 0.0.0.0/0
+protocols and ports : choose specified protocols and ports, check tcp : and mention the front services external ports
