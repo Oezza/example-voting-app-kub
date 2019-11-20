@@ -85,4 +85,11 @@ To check if the result app is correctly running, go to http://{result-service.EX
 
 You can now add votes in the voting app and check the result in the result app.
 
+## Create the voting app using deployments and services
+
 Deploying PODS does not help to scale the application easily. If a POD fails, it will not come up again.
+
+under deployment folder
+kubectl create -f .
+kubectl get all
+
