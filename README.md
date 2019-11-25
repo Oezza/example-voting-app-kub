@@ -88,19 +88,62 @@ You can now add votes in the voting app and check the result in the result app.
 ## Create the voting app using deployments and services
 
 Deploying PODS does not help to scale the application easily. If a POD fails, it will not come up again.
+To adress this problem, we need to create deployements instead of pods.
 
-under deployment folder
+![Application architecture with deployments](/resources/VotingAppWithDeployment.png)
+
+Under deployments folder
+
+```
 kubectl create -f .
 kubectl get all
+```
 
-If you're not able to access to the application from the NodeExternalIP/AppExternalPort, please check the firewall conforguration.
+You'll notice that you still have the pods created in the last section. Note that these pods matche the created deployments label selectorsn but are not managed by it.
+
+![Managed Pods](/resources/ManagedPods.png)
+
+Now let's scale the front applications voting and result from 1 to 3 pods.
+To do so you can :
+
+1. Update the replicas number in the 'result-app-deployment.yml' and 'voting-app-deployment.yml', then
+
+   ```
+   kubectl apply -f result-app-deployment.yml
+   kubectl apply -f voting-app-deployment.yml
+   kubectl get deployments
+       NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+       postgres-deployment     1/1     1            1           9d
+       redis-deployment        1/1     1            1           9d
+       result-app-deployment   3/3     3            3           9d
+       voting-app-deployment   3/3     3            3           9d
+       worker-deployment       1/1     1            1           9d
+   ```
+
+2. Or use the scale --replicas option
+
+   ```
+   kubectl scale --replicas=3 -f result-app-deployment.yml
+   ```
+
+   ```
+   kubectl scale --replicas=3 deployment voting-app-deployment //deployment = kind in the yml file, voting-app-deployment corresponds to the metadata.name in the yml file
+   ```
+
+   **NB** : the scale --replicas option does not update the yml file. If you need to save the scale value then you have to do it manually in the file.
+
+### Tips
+
+If you're not able to access to the application from the http://{NodeExternalIP}:{AppExternalPort}, then please check the cloud provider's firewall conforguration.
+
 You can add a new firewall rule in GCP as follow :
-Go to GCP console NETWORKING / VPC network / firewall rules
-In the list of rules, copy the target of the rules related to the voting-app
-Click on the button create firewall rule
-Name : voting app
-Targets : specified target tags
-Targets tag : gke-example-voting-app-d3ec8c0c-node // past the target you've copied later
-Source filter : ip ranges
-Source IP ranges : 0.0.0.0/0
-protocols and ports : choose specified protocols and ports, check tcp : and mention the front services external ports
+
+1. Go to GCP console NETWORKING / VPC network / firewall rules
+2. In the list of rules, copy the target of the rules related to the voting-app
+3. Click on the button create firewall rule
+   - Name : voting app
+   - Targets : specified target tags
+   - Targets tag : gke-example-voting-app-d3ec8c0c-node // past the target you've copied later
+   - Source filter : ip ranges
+   - Source IP ranges : 0.0.0.0/0
+   - Protocols and ports -> choose specified protocols and ports -> check tcp -> and mention the front services external ports
